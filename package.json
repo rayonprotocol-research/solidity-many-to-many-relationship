@@ -1,0 +1,27 @@
+{
+  "name": "solidity-many-to-many-relationship",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rayonprotocol-research/solidity-many-to-many-relationship.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rayonprotocol-research/solidity-many-to-many-relationship/issues"
+  },
+  "homepage": "https://github.com/rayonprotocol-research/solidity-many-to-many-relationship#readme",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "web3": "^1.0.0-beta.36"
+  }
+}
