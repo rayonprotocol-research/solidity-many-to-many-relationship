@@ -1,0 +1,10 @@
+.DS_Store
+.idea/
+dist/
+node_modules/
+src/**/*.jsx
+tests/__coverage__/
+tests/**/*.jsx
+package-lock.json
+yarn.lock
+build/
