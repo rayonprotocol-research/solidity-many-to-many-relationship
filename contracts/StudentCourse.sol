@@ -32,6 +32,35 @@ contract StudentCourse {
     }
 
     function disconnect(address _studentId, bytes32 _courseId) public {
+        require(isConnect(_studentId,_courseId), "entry must be present in map");
+
+        bytes32 key = studentToCourseMap[_studentId][_courseId];
+
+        StudentCourseEntry storage entry = entryMap[key]; // entryMap
+
+        // entryKeyList
+        bytes32 lastKeyOfList = entryKeyList[entryKeyList.length - 1];
+        entryMap[lastKeyOfList].entryKeyIndex = entry.entryKeyIndex;
+        entryKeyList[entry.entryKeyIndex] = lastKeyOfList;
+        entryKeyList.length--;
+
+        // studentToCourseListMap
+        lastKeyOfList = studentToCourseListMap[_studentId][studentToCourseListMap[_studentId].length - 1];
+        entryMap[lastKeyOfList].studentToCourseIndex = entry.studentToCourseIndex;
+        studentToCourseListMap[_studentId][entry.studentToCourseIndex] = lastKeyOfList;
+        studentToCourseListMap[_studentId].length--;
+
+        // courseToStudentListMap
+        lastKeyOfList = courseToStudentListMap[_courseId][courseToStudentListMap[_courseId].length - 1];
+        entryMap[lastKeyOfList].courceToStudentIndex = entry.courceToStudentIndex;
+        courseToStudentListMap[_courseId][entry.courceToStudentIndex] = lastKeyOfList;
+        courseToStudentListMap[_courseId].length--;
+
+        // delete from studentToCourseMap
+        delete studentToCourseMap[_studentId][_courseId];
+
+        // delete from entryMap
+        delete entryMap[key];
     }
 
     function isConnect(address _studentId, bytes32 _courseId) public view returns (bool) {

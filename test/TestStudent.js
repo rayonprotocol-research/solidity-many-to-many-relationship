@@ -35,12 +35,18 @@ contract('Student', function (accounts) {
         assert.equal(studentId, student1.id);
         assert.equal(studentName, student1.name);
     });
+    it('Add first student again', async () => {
+        await contract.add(student1.id, student1.name).should.be.rejectedWith(/revert/);
+    });
     it('Remove first student', async () => {
         await contract.remove(student1.id).should.be.fulfilled;
 
         assert.equal(await contract.contains(student1.id), false);
 
         assert.equal(await contract.size(), 0);
+    });
+    it('Remove first student again', async () => {
+        await contract.remove(student1.id).should.be.rejectedWith(/revert/);
     });
     it('Add first & second students', async () => {
         await contract.add(student1.id, student1.name).should.be.fulfilled;

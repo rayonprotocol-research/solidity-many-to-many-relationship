@@ -216,4 +216,143 @@ contract('StudentCourse', function (accounts) {
         assert.equal(await contract.getConnectedStudentId(course6.id, 0), student2.id);
         assert.equal(await contract.getConnectedStudentId(course6.id, 1), student4.id);
     });
+    it("try to connect students and courses which are already connected", async () => {
+        await contract.connect(student1.id, course2.id).should.be.rejectedWith(/revert/);
+        await contract.connect(student2.id, course6.id).should.be.rejectedWith(/revert/);
+        await contract.connect(student3.id, course2.id).should.be.rejectedWith(/revert/);
+        await contract.connect(student4.id, course6.id).should.be.rejectedWith(/revert/);
+    });
+    it("disconnect student 2 <-> course 2", async () => {
+        // before sending disconnect
+        assert.equal(await contract.isConnect(student2.id, course1.id), true);
+        assert.equal(await contract.isConnect(student2.id, course2.id), true);
+        assert.equal(await contract.isConnect(student2.id, course3.id), true);
+        assert.equal(await contract.isConnect(student2.id, course4.id), true);
+        assert.equal(await contract.isConnect(student2.id, course5.id), true);
+        assert.equal(await contract.isConnect(student2.id, course6.id), true);
+
+        await contract.disconnect(student2.id, course2.id).should.be.fulfilled;
+
+        // after sending disconnect
+        assert.equal(await contract.isConnect(student2.id, course1.id), true);
+        assert.equal(await contract.isConnect(student2.id, course2.id), false);
+        assert.equal(await contract.isConnect(student2.id, course3.id), true);
+        assert.equal(await contract.isConnect(student2.id, course4.id), true);
+        assert.equal(await contract.isConnect(student2.id, course5.id), true);
+        assert.equal(await contract.isConnect(student2.id, course6.id), true);
+
+        assert.equal(await contract.getConnectedTotalCount(), 11);
+        assert.equal(await contract.getConnectedCourseCount(student1.id), 3);
+        assert.equal(await contract.getConnectedCourseCount(student2.id), 5);
+        assert.equal(await contract.getConnectedCourseCount(student3.id), 1);
+        assert.equal(await contract.getConnectedCourseCount(student4.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course1.id), 1);
+        assert.equal(await contract.getConnectedStudentCount(course2.id), 3);
+        assert.equal(await contract.getConnectedStudentCount(course3.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course4.id), 1);
+        assert.equal(await contract.getConnectedStudentCount(course5.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course6.id), 2);
+
+        // check student 2 <-> course 1,6,3,4,5
+        assert.equal(await contract.getConnectedCourseCount(student2.id), 5);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 0), course1.id);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 1), course6.id);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 2), course3.id);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 3), course4.id);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 4), course5.id);
+
+        // check course 2 <-> student 1,4,3
+        assert.equal(await contract.getConnectedStudentCount(course2.id), 3);
+        assert.equal(await contract.getConnectedStudentId(course2.id, 0), student1.id);
+        assert.equal(await contract.getConnectedStudentId(course2.id, 1), student4.id);
+        assert.equal(await contract.getConnectedStudentId(course2.id, 2), student3.id);
+    });
+    it("disconnect student 2 <-> course 1", async () => {
+        // before sending disconnect
+        assert.equal(await contract.isConnect(student2.id, course1.id), true);
+        assert.equal(await contract.isConnect(student2.id, course2.id), false);
+        assert.equal(await contract.isConnect(student2.id, course3.id), true);
+        assert.equal(await contract.isConnect(student2.id, course4.id), true);
+        assert.equal(await contract.isConnect(student2.id, course5.id), true);
+        assert.equal(await contract.isConnect(student2.id, course6.id), true);
+
+        await contract.disconnect(student2.id, course1.id).should.be.fulfilled;
+
+        // after sending disconnect
+        assert.equal(await contract.isConnect(student2.id, course1.id), false);
+        assert.equal(await contract.isConnect(student2.id, course2.id), false);
+        assert.equal(await contract.isConnect(student2.id, course3.id), true);
+        assert.equal(await contract.isConnect(student2.id, course4.id), true);
+        assert.equal(await contract.isConnect(student2.id, course5.id), true);
+        assert.equal(await contract.isConnect(student2.id, course6.id), true);
+
+        assert.equal(await contract.getConnectedTotalCount(), 10);
+        assert.equal(await contract.getConnectedCourseCount(student1.id), 3);
+        assert.equal(await contract.getConnectedCourseCount(student2.id), 4);
+        assert.equal(await contract.getConnectedCourseCount(student3.id), 1);
+        assert.equal(await contract.getConnectedCourseCount(student4.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course1.id), 0);
+        assert.equal(await contract.getConnectedStudentCount(course2.id), 3);
+        assert.equal(await contract.getConnectedStudentCount(course3.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course4.id), 1);
+        assert.equal(await contract.getConnectedStudentCount(course5.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course6.id), 2);
+
+        // check student 2 <-> course 5,6,3,4
+        assert.equal(await contract.getConnectedCourseCount(student2.id), 4);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 0), course5.id);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 1), course6.id);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 2), course3.id);
+        assert.equal(await contract.getConnectedCourseId(student2.id, 3), course4.id);
+
+        // check course 1 <-> student
+        assert.equal(await contract.getConnectedStudentCount(course1.id), 0);
+    });
+    it("disconnect student 4 <-> course 2", async () => {
+        // before sending disconnect
+        assert.equal(await contract.isConnect(student4.id, course1.id), false);
+        assert.equal(await contract.isConnect(student4.id, course2.id), true);
+        assert.equal(await contract.isConnect(student4.id, course3.id), false);
+        assert.equal(await contract.isConnect(student4.id, course4.id), false);
+        assert.equal(await contract.isConnect(student4.id, course5.id), false);
+        assert.equal(await contract.isConnect(student4.id, course6.id), true);
+
+        await contract.disconnect(student4.id, course2.id).should.be.fulfilled;
+
+        // after sending disconnect
+        assert.equal(await contract.isConnect(student4.id, course1.id), false);
+        assert.equal(await contract.isConnect(student4.id, course2.id), false);
+        assert.equal(await contract.isConnect(student4.id, course3.id), false);
+        assert.equal(await contract.isConnect(student4.id, course4.id), false);
+        assert.equal(await contract.isConnect(student4.id, course5.id), false);
+        assert.equal(await contract.isConnect(student4.id, course6.id), true);
+
+        assert.equal(await contract.getConnectedTotalCount(), 9);
+        assert.equal(await contract.getConnectedCourseCount(student1.id), 3);
+        assert.equal(await contract.getConnectedCourseCount(student2.id), 4);
+        assert.equal(await contract.getConnectedCourseCount(student3.id), 1);
+        assert.equal(await contract.getConnectedCourseCount(student4.id), 1);
+        assert.equal(await contract.getConnectedStudentCount(course1.id), 0);
+        assert.equal(await contract.getConnectedStudentCount(course2.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course3.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course4.id), 1);
+        assert.equal(await contract.getConnectedStudentCount(course5.id), 2);
+        assert.equal(await contract.getConnectedStudentCount(course6.id), 2);
+
+        // check student 4 <-> course 6
+        assert.equal(await contract.getConnectedCourseCount(student4.id), 1);
+        assert.equal(await contract.getConnectedCourseId(student4.id, 0), course6.id);
+
+        // check course 2 <-> student 1,3
+        assert.equal(await contract.getConnectedStudentCount(course2.id), 2);
+        assert.equal(await contract.getConnectedStudentId(course2.id, 0), student1.id);
+        assert.equal(await contract.getConnectedStudentId(course2.id, 1), student3.id);
+    });
+    it("try to disconnect students and courses which are not connected", async () => {
+        await contract.disconnect(student1.id, course1.id).should.be.rejectedWith(/revert/);
+        await contract.disconnect(student3.id, course5.id).should.be.rejectedWith(/revert/);
+        await contract.disconnect(student2.id, course1.id).should.be.rejectedWith(/revert/);
+        await contract.disconnect(student4.id, course2.id).should.be.rejectedWith(/revert/);
+    });
+
 })

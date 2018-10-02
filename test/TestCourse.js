@@ -39,12 +39,18 @@ contract('Course', function (accounts) {
         assert.equal(courseTeacherId, course1.teacherId);
         assert.equal(courseBook, course1.book);
     });
+    it('Add first course again', async () => {
+        await contract.add(course1.id, course1.name, course1.teacherId, course1.book).should.be.rejectedWith(/revert/);
+    });
     it('Remove first course', async () => {
         await contract.remove(course1.id).should.be.fulfilled;
 
         assert.equal(await contract.contains(course1.id), false);
 
         assert.equal(await contract.size(), 0);
+    });
+    it('Remove first course again', async () => {
+        await contract.remove(course1.id).should.be.rejectedWith(/revert/);
     });
     it('Add first & second courses', async () => {
         await contract.add(course1.id, course1.name, course1.teacherId, course1.book).should.be.fulfilled;
