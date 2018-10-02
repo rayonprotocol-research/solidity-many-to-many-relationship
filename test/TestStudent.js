@@ -7,21 +7,21 @@ const Student = artifacts.require('./Student.sol');
 contract('Student', function (accounts) {
     var contract;
     const admin = accounts[0];
-    const student1 = { 'id': accounts[1], 'name': "student1" };
-    const student2 = { 'id': accounts[2], 'name': "student2" };
-    const student3 = { 'id': accounts[3], 'name': "student3" };
-    const student4 = { 'id': accounts[4], 'name': "student4" };
+    const student1 = { 'id': accounts[1], 'name': 'student1' };
+    const student2 = { 'id': accounts[2], 'name': 'student2' };
+    const student3 = { 'id': accounts[3], 'name': 'student3' };
+    const student4 = { 'id': accounts[4], 'name': 'student4' };
 
     before('setup contract for each test', async () => {
         contract = await Student.new({ from: admin });
         console.log('Student is deployed: ' + contract.address);
     })
 
-    it("Check empty list", async () => {
+    it('Check empty list', async () => {
         assert.equal(await contract.size(), 0);
     });
 
-    it("Add first student", async () => {
+    it('Add first student', async () => {
         await contract.add(student1.id, student1.name).should.be.fulfilled;
 
         assert.equal(await contract.contains(student1.id), true);
@@ -35,14 +35,14 @@ contract('Student', function (accounts) {
         assert.equal(studentId, student1.id);
         assert.equal(studentName, student1.name);
     });
-    it("Remove first student", async () => {
+    it('Remove first student', async () => {
         await contract.remove(student1.id).should.be.fulfilled;
 
         assert.equal(await contract.contains(student1.id), false);
 
         assert.equal(await contract.size(), 0);
     });
-    it("Add first & second students", async () => {
+    it('Add first & second students', async () => {
         await contract.add(student1.id, student1.name).should.be.fulfilled;
         await contract.add(student2.id, student2.name).should.be.fulfilled;
 
@@ -64,7 +64,7 @@ contract('Student', function (accounts) {
         assert.equal(studentId, student2.id);
         assert.equal(studentName, student2.name);
     });
-    it("Add third & fourth students", async () => {
+    it('Add third & fourth students', async () => {
         await contract.add(student3.id, student3.name).should.be.fulfilled;
         await contract.add(student4.id, student4.name).should.be.fulfilled;
 
@@ -94,7 +94,7 @@ contract('Student', function (accounts) {
         assert.equal(studentId, student4.id);
         assert.equal(studentName, student4.name);
     });
-    it("Remove second student", async () => {
+    it('Remove second student', async () => {
         await contract.remove(student2.id).should.be.fulfilled;
 
         assert.equal(await contract.contains(student2.id), false);
@@ -110,7 +110,7 @@ contract('Student', function (accounts) {
         assert.equal(studentId, student3.id);
         assert.equal(studentName, student3.name);
     });
-    it("Remove first student", async () => {
+    it('Remove first student', async () => {
         await contract.remove(student1.id).should.be.fulfilled;
 
         assert.equal(await contract.contains(student1.id), false);
@@ -123,7 +123,7 @@ contract('Student', function (accounts) {
         assert.equal(studentId, student4.id);
         assert.equal(studentName, student4.name);
     });
-    it("Remove fourth student", async () => {
+    it('Remove fourth student', async () => {
         await contract.remove(student4.id).should.be.fulfilled;
 
         assert.equal(await contract.contains(student4.id), false);
@@ -133,7 +133,7 @@ contract('Student', function (accounts) {
         assert.equal(studentId, student3.id);
         assert.equal(studentName, student3.name);
     });
-    it("Remove third student", async () => {
+    it('Remove third student', async () => {
         await contract.remove(student3.id).should.be.fulfilled;
 
         assert.equal(await contract.contains(student3.id), false);
